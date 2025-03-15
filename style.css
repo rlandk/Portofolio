@@ -754,6 +754,13 @@ footer {
     }
 }
 
+/* Mobile Phone */
+@media (max-width: 450px) {
+    html {
+        font-size: 55%;
+    }
+}
+
 /* No Scroll Class */
 .no-scroll {
     overflow: hidden;
