@@ -128,30 +128,35 @@ function parallax(e) {
 const contactForm = document.getElementById('contact-form');
 
 contactForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(contactForm);
-    const formValues = Object.fromEntries(formData);
-    
-    // Add loading state to button
-    const submitBtn = contactForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    submitBtn.disabled = true;
-    
-    try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Show success message
-        showNotification('Message sent successfully!', 'success');
-        contactForm.reset();
-    } catch (error) {
-        showNotification('Failed to send message. Please try again.', 'error');
-    } finally {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
+  e.preventDefault();
+
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+  submitBtn.disabled = true;
+
+  try {
+    // Kirim data sungguhan ke Formspree
+    const response = await fetch(contactForm.action, {
+      method: contactForm.method,
+      body: new FormData(contactForm),
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      showNotification('Message sent successfully!', 'success');
+      contactForm.reset();
+    } else {
+      showNotification('Failed to send message. Please try again.', 'error');
     }
+  } catch (error) {
+    showNotification('Failed to send message. Please try again.', 'error');
+  } finally {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
 });
 
 // Notification System
